@@ -42,11 +42,6 @@
             letterbox: true, 
         });
 
-        // Load Free Sprites built into the engine
-        loadSprite("player", "https://kaboomjs.com"); 
-        loadSprite("wall", "https://kaboomjs.com");     
-        loadSprite("node", "https://kaboomjs.com");  
-
         setGravity(0);
 
         // Map Layout Structure (# = Wall, N = Info Desk)
@@ -65,14 +60,17 @@
             tileWidth: 40,
             tileHeight: 40,
             tiles: {
-                "#": () => [sprite("wall"), area(), body(), isStatic(), "wall"],
-                "N": () => [sprite("node"), area(), body(), isStatic(), "resume-node"],
+                // Red squares for walls
+                "#": () => [rect(40, 40), color(200, 50, 50), area(), body(), isStatic(), "wall"],
+                // Green squares for info desks
+                "N": () => [rect(40, 40), color(50, 200, 50), area(), body(), isStatic(), "resume-node"],
             },
         });
 
-        // Spawn Character
+        // Spawn Character (Blue square)
         const player = add([
-            sprite("player"),
+            rect(32, 32),
+            color(50, 100, 250),
             pos(400, 300), 
             area(),         
             body(),         
@@ -96,7 +94,7 @@
         ]);
 
         const dialogText = add([
-            text("Use Arrow Keys to move! Walk up to objects to read my resume.", { size: 16, width: 720 }),
+            text("Use Arrow Keys to move! Walk up to the blocks to read my resume.", { size: 16, width: 720 }),
             pos(40, 500),
             color(255, 255, 255),
             fixed()
@@ -124,3 +122,4 @@
     </script>
 </body>
 </html>
+
