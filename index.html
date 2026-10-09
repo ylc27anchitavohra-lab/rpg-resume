@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Retro RPG Resume</title>
+    <!-- Load the Retro Game Engine -->
+    <script src="https://unpkg.com"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #111;
+            overflow: hidden;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        #resume-link {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #ff0055;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            border: 3px solid white;
+            box-shadow: 4px 4px 0px #000;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="#" id="resume-link" target="_blank">📄 View Standard PDF Resume</a>
+
+    <script>
+        kaplay({
+            background:, 
+            width: 800,
+            height: 600,
+            letterbox: true, 
+        });
+
+        // Load Free Sprites built into the engine
+        loadSprite("player", "https://kaboomjs.com"); 
+        loadSprite("wall", "https://kaboomjs.com");     
+        loadSprite("node", "https://kaboomjs.com");  
+
+        setGravity(0);
+
+        // Map Layout Structure (# = Wall, N = Info Desk)
+        addLevel([
+            "####################",
+            "#                  #",
+            "#   N          N   #",
+            "#                  #",
+            "#                  #",
+            "#        P         #",
+            "#                  #",
+            "#   N          N   #",
+            "#                  #",
+            "####################",
+        ], {
+            tileWidth: 40,
+            tileHeight: 40,
+            tiles: {
+                "#": () => [sprite("wall"), area(), body(), isStatic(), "wall"],
+                "N": () => [sprite("node"), area(), body(), isStatic(), "resume-node"],
+            },
+        });
+
+        // Spawn Character
+        const player = add([
+            sprite("player"),
+            pos(400, 300), 
+            area(),         
+            body(),         
+            "player",       
+        ]);
+
+        // Character Movement Controls
+        const SPEED = 220;
+        onKeyDown("left", () => { player.move(-SPEED, 0); });
+        onKeyDown("right", () => { player.move(SPEED, 0); });
+        onKeyDown("up", () => { player.move(0, -SPEED); });
+        onKeyDown("down", () => { player.move(0, SPEED); });
+
+        // Text Box UI Setup
+        const dialogBox = add([
+            rect(760, 100, { radius: 8 }),
+            pos(20, 480),
+            color(0, 0, 0),
+            outline(4, rgb(255, 255, 255)),
+            fixed()
+        ]);
+
+        const dialogText = add([
+            text("Use Arrow Keys to move! Walk up to objects to read my resume.", { size: 16, width: 720 }),
+            pos(40, 500),
+            color(255, 255, 255),
+            fixed()
+        ]);
+
+        // Interaction Text Data
+        player.onCollide("resume-node", (node) => {
+            if(node.pos.x < 300 && node.pos.y < 300) {
+                dialogText.text = "🎯 MY SKILLS:\nCoding, Design, Web Development, Problem Solving.";
+            } 
+            else if (node.pos.x > 300 && node.pos.y < 300) {
+                dialogText.text = "💼 EXPERIENCE:\nYour Work History goes here! Talk about your roles.";
+            } 
+            else if (node.pos.x < 300 && node.pos.y > 300) {
+                dialogText.text = "🚀 PROJECTS:\nTalk about websites or creative items you have built.";
+            } 
+            else {
+                dialogText.text = "📞 CONTACT:\nPut your email or LinkedIn handle here.";
+            }
+        });
+
+        player.onCollideEnd("resume-node", () => {
+            dialogText.text = "Keep exploring to learn more about me!";
+        });
+    </script>
+</body>
+</html>
